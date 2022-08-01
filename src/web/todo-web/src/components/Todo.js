@@ -1,4 +1,10 @@
 import TodoHeader from "./TodoHeader";
+import Button from "react-bootstrap/Button";
+import Card from "react-bootstrap/Card";
+import Col from "react-bootstrap/Col";
+import Container from "react-bootstrap/Container";
+import ListGroup from "react-bootstrap/ListGroup";
+import Row from "react-bootstrap/Row";
 
 function Todo(props) {
   let user = {
@@ -24,8 +30,31 @@ function Todo(props) {
 
   return (
     <div className="todo">
-      <TodoHeader user={user}></TodoHeader>
-      <div className="todo-list">{itemsList}</div>
+      <Container>
+        <Row>
+          <Col />
+          <Col xs="6">
+            <Card>
+              <Card.Header>
+                <TodoHeader user={user}></TodoHeader>
+              </Card.Header>
+              {/* <Card.Body> */}
+              {/* <Card.Title>Special title treatment</Card.Title> */}
+              <ListGroup variant="flush">
+                <ListGroup.Item>Test</ListGroup.Item>
+                <ListGroup.Item>Test</ListGroup.Item>
+                <ListGroup.Item>Test</ListGroup.Item>
+              </ListGroup>
+              {/* <div className="todo-list">{itemsList}</div> */}
+              {/* </Card.Body>11 */}
+              <Card.Footer>2 days ago</Card.Footer>
+            </Card>
+          </Col>
+          <Col />
+        </Row>
+      </Container>
+
+      <Button variant="primary">Go somewhere</Button>
     </div>
   );
 }

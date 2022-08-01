@@ -7,7 +7,11 @@ function TodoHeader(props) {
     user.name = props.user.name;
   }
 
-  return <p>Welcome to {user.name}'s TODO list!</p>;
+  return (
+    <div className="todo-header">
+      <p>Welcome to {user.name}'s TODO list!</p>
+    </div>
+  );
 }
 
 export default TodoHeader;

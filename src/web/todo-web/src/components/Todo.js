@@ -5,6 +5,7 @@ import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import ListGroup from "react-bootstrap/ListGroup";
 import Row from "react-bootstrap/Row";
+import Form from "react-bootstrap/Form";
 
 function Todo(props) {
   let user = {
@@ -22,11 +23,37 @@ function Todo(props) {
     user.name = props.user.name;
   }
 
+  function handleChange(key) {
+    const target = items.find((item) => item.id === key);
+    console.log(`${key} - ${target.isDone}`);
+    target.isDone = !target.isDone;
+  }
+
   const itemsList = items.map((item) => (
-    <p className="todo-list-item" key={item.id.toString()}>
-      {item.title}
-    </p>
+    // <p className="todo-list-item" key={item.id.toString()}>
+    //   {item.title}
+    // </p>
+    <ListGroup.Item
+      action
+      key={item.id.toString()}
+      onClick={() => handleChange(item.id)}
+    >
+      {/* {" "}
+      <Form.Check
+        type="checkbox"
+        id={item.id.toString()}
+        label={item.title}
+        onChange={() => handleChange(item.id)}
+        checked={item.isDone}
+      /> */}
+      <div>
+        {item.title}
+        {item.isDone ? " - DONE!" : ""}
+      </div>
+    </ListGroup.Item>
   ));
+
+  const itemsLeft = items.filter((item) => !item.isDone).length;
 
   return (
     <div className="todo">
@@ -40,14 +67,10 @@ function Todo(props) {
               </Card.Header>
               {/* <Card.Body> */}
               {/* <Card.Title>Special title treatment</Card.Title> */}
-              <ListGroup variant="flush">
-                <ListGroup.Item>Test</ListGroup.Item>
-                <ListGroup.Item>Test</ListGroup.Item>
-                <ListGroup.Item>Test</ListGroup.Item>
-              </ListGroup>
+              <ListGroup variant="flush">{itemsList}</ListGroup>
               {/* <div className="todo-list">{itemsList}</div> */}
               {/* </Card.Body>11 */}
-              <Card.Footer>2 days ago</Card.Footer>
+              <Card.Footer>{itemsLeft} items left!</Card.Footer>
             </Card>
           </Col>
           <Col />

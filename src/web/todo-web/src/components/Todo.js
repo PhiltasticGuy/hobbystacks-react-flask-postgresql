@@ -15,6 +15,16 @@ const itemsList = [
   { id: 5, title: "This is item #5.", isDone: false },
 ];
 
+// function getItemsLeft(items) {
+const getItemsLeft = (items) => {
+  if (!items) {
+    // TODO: Log a meaningful message somewhere...
+    console.log("getItemsLeft: items must be defined!");
+    return;
+  }
+  return items.filter((item) => !item.isDone).length;
+};
+
 // function Todo(props) {
 // const Todo = (props) => {
 const Todo = ({ username }) => {
@@ -30,24 +40,32 @@ const Todo = ({ username }) => {
     username = "Shifu Meister";
   }
 
-  function handleChange(key) {
-    const target = items.find((item) => item.id === key);
-    // console.log(`${key} - ${target.isDone}`);
-    target.isDone = !target.isDone;
-    setItems(items);
-    setItemsLeft(getItemsLeft(items));
-  }
+  // function handleChange(key) {
+  const handleChange = (key) => {
+    if (!key) {
+      // TODO: Log a meaningful message somewhere...
+      console.log("handleChange: key must be defined!");
+      return;
+    }
 
-  function getItemsLeft(items) {
-    return items.filter((item) => !item.isDone).length;
-  }
+    const target = items.find((item) => item.id === key);
+
+    if (target) {
+      target.isDone = !target.isDone;
+      setItems(items);
+      setItemsLeft(getItemsLeft(items));
+    } else {
+      // TODO: Log a meaningful message somewhere...
+      console.log(
+        `handleChange: item with specified key (${key}) does not exist.`
+      );
+    }
+  };
 
   const itemsComponents = items.map((item) => (
-    // <p className="todo-list-item" key={item.id.toString()}>
-    //   {item.title}
-    // </p>
     <ListGroup.Item
       action
+      className="todo-list-item"
       key={item.id.toString()}
       onClick={() => handleChange(item.id)}
     >

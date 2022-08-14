@@ -4,12 +4,12 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   const user = {
-    name: "Shifu"
+    name: "Shifu Meister"
   };
 
   return (
     <div className="App">
-      <Todo user={user}></Todo>
+      <Todo username={user.name}></Todo>
     </div>
   );
 }

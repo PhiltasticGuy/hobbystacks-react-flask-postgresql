@@ -1,3 +1,4 @@
+import { useState } from "react";
 import TodoHeader from "./TodoHeader";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
@@ -5,31 +6,43 @@ import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import ListGroup from "react-bootstrap/ListGroup";
 import Row from "react-bootstrap/Row";
-import Form from "react-bootstrap/Form";
 
-function Todo(props) {
-  let user = {
-    name: "Shifu Meister",
-  };
-  const items = [
-    { id: 1, title: "This is item #1.", isDone: false },
-    { id: 2, title: "This is item #2.", isDone: false },
-    { id: 3, title: "This is item #3.", isDone: false },
-    { id: 4, title: "This is item #4.", isDone: false },
-    { id: 5, title: "This is item #5.", isDone: false },
-  ];
+const itemsList = [
+  { id: 1, title: "This is item #1.", isDone: false },
+  { id: 2, title: "This is item #2.", isDone: false },
+  { id: 3, title: "This is item #3.", isDone: false },
+  { id: 4, title: "This is item #4.", isDone: false },
+  { id: 5, title: "This is item #5.", isDone: false },
+];
 
-  if (props.user && props.user.name) {
-    user.name = props.user.name;
+// function Todo(props) {
+// const Todo = (props) => {
+const Todo = ({ username }) => {
+  const [items, setItems] = useState(itemsList);
+  const [itemsLeft, setItemsLeft] = useState(getItemsLeft(items));
+
+  // Validate the component's props.
+  // let username = "Shifu Meister";
+  // if (props.username) {
+  //   username = props.username;
+  // }
+  if (!username) {
+    username = "Shifu Meister";
   }
 
   function handleChange(key) {
     const target = items.find((item) => item.id === key);
-    console.log(`${key} - ${target.isDone}`);
+    // console.log(`${key} - ${target.isDone}`);
     target.isDone = !target.isDone;
+    setItems(items);
+    setItemsLeft(getItemsLeft(items));
   }
 
-  const itemsList = items.map((item) => (
+  function getItemsLeft(items) {
+    return items.filter((item) => !item.isDone).length;
+  }
+
+  const itemsComponents = items.map((item) => (
     // <p className="todo-list-item" key={item.id.toString()}>
     //   {item.title}
     // </p>
@@ -53,8 +66,6 @@ function Todo(props) {
     </ListGroup.Item>
   ));
 
-  const itemsLeft = items.filter((item) => !item.isDone).length;
-
   return (
     <div className="todo">
       <Container>
@@ -63,12 +74,12 @@ function Todo(props) {
           <Col xs="6">
             <Card>
               <Card.Header>
-                <TodoHeader user={user}></TodoHeader>
+                <TodoHeader username={username}></TodoHeader>
               </Card.Header>
               {/* <Card.Body> */}
               {/* <Card.Title>Special title treatment</Card.Title> */}
-              <ListGroup variant="flush">{itemsList}</ListGroup>
-              {/* <div className="todo-list">{itemsList}</div> */}
+              <ListGroup variant="flush">{itemsComponents}</ListGroup>
+              {/* <div className="todo-list">{itemsComponents}</div> */}
               {/* </Card.Body>11 */}
               <Card.Footer>{itemsLeft} items left!</Card.Footer>
             </Card>
@@ -80,6 +91,6 @@ function Todo(props) {
       <Button variant="primary">Go somewhere</Button>
     </div>
   );
-}
+};
 
 export default Todo;

@@ -3,14 +3,12 @@ import TodoHeader from "./TodoHeader";
 
 test("renders name properly", () => {
   // Arrange
-  const user = {
-    name: "Shifu",
-  };
+  const username = "Shifu";
   const expected = /Welcome to Shifu's TODO list!/i;
   let header = null;
 
   // Act
-  render(<TodoHeader user={user}></TodoHeader>);
+  render(<TodoHeader username={username}></TodoHeader>);
 
   // Assert
   expect(() => {
@@ -22,12 +20,12 @@ test("renders name properly", () => {
 
 test("renders empty name properly", () => {
   // Arrange
-  const user = {};
+  const username = undefined;
   const expected = /Welcome to He Who Shall Not Be Named's TODO list!/i;
   let header = null;
 
   // Act
-  render(<TodoHeader user={user}></TodoHeader>);
+  render(<TodoHeader username={username}></TodoHeader>);
 
   // Assert
   expect(() => {

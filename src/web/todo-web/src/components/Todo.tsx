@@ -7,7 +7,12 @@ import Container from "react-bootstrap/Container";
 import ListGroup from "react-bootstrap/ListGroup";
 import Row from "react-bootstrap/Row";
 
-const itemsList = [
+interface IUser {
+  id: number;
+  title: string;
+  isDone: boolean;
+}
+const itemsList: IUser[] = [
   { id: 1, title: "This is item #1.", isDone: false },
   { id: 2, title: "This is item #2.", isDone: false },
   { id: 3, title: "This is item #3.", isDone: false },
@@ -16,32 +21,30 @@ const itemsList = [
 ];
 
 // function getItemsLeft(items) {
-const getItemsLeft = (items) => {
+const getItemsLeft = (items: IUser[]) => {
   if (!items) {
     // TODO: Log a meaningful message somewhere...
     console.log("getItemsLeft: items must be defined!");
     return;
   }
-  return items.filter((item) => !item.isDone).length;
+  return items.filter((item: IUser) => !item.isDone).length;
 };
 
-// function Todo(props) {
-// const Todo = (props) => {
-const Todo = ({ username }) => {
+interface ITodoProps {
+  username?: string;
+}
+
+const Todo = (props: ITodoProps) => {
   const [items, setItems] = useState(itemsList);
   const [itemsLeft, setItemsLeft] = useState(getItemsLeft(items));
 
   // Validate the component's props.
-  // let username = "Shifu Meister";
-  // if (props.username) {
-  //   username = props.username;
-  // }
-  if (!username) {
-    username = "Shifu Meister";
+  if (!props.username) {
+    props.username = "Shifu Meister";
   }
 
   // function handleChange(key) {
-  const handleChange = (key) => {
+  const handleChange = (key: number) => {
     if (!key) {
       // TODO: Log a meaningful message somewhere...
       console.log("handleChange: key must be defined!");
@@ -92,7 +95,7 @@ const Todo = ({ username }) => {
           <Col xs="6">
             <Card>
               <Card.Header>
-                <TodoHeader username={username}></TodoHeader>
+                <TodoHeader username={props.username}></TodoHeader>
               </Card.Header>
               {/* <Card.Body> */}
               {/* <Card.Title>Special title treatment</Card.Title> */}

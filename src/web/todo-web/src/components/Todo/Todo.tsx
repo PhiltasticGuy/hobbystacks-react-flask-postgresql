@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import TodoHeader from "components/TodoHeader/TodoHeader";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
@@ -6,28 +6,23 @@ import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import ListGroup from "react-bootstrap/ListGroup";
 import Row from "react-bootstrap/Row";
+import ITodoItem from "objects/ITodoItem";
+import TodoService from "services/TodoService";
+// import useGetTodoItems, { IGetTodoItemsResult } from "hooks/useGetTodoItems";
 
-interface IUser {
-  id: number;
-  title: string;
-  isDone: boolean;
-}
-const itemsList: IUser[] = [
-  { id: 1, title: "This is item #1.", isDone: false },
-  { id: 2, title: "This is item #2.", isDone: false },
-  { id: 3, title: "This is item #3.", isDone: false },
-  { id: 4, title: "This is item #4.", isDone: false },
-  { id: 5, title: "This is item #5.", isDone: false },
-];
+// TODO: TodoService could be a Singleton.
+const todoService = new TodoService();
 
-// function getItemsLeft(items) {
-const getItemsLeft = (items: IUser[]) => {
+const getItemsLeft = (items: ITodoItem[]) => {
   if (!items) {
     // TODO: Log a meaningful message somewhere...
-    console.log("getItemsLeft: items must be defined!");
-    return;
+    console.error("getItemsLeft: items must be defined!");
+    return -1;
   }
-  return items.filter((item: IUser) => !item.isDone).length;
+
+  const itemsLeft = items.filter((item: ITodoItem) => !item.isDone);
+
+  return itemsLeft.length ?? -1;
 };
 
 interface ITodoProps {
@@ -35,19 +30,27 @@ interface ITodoProps {
 }
 
 const Todo = (props: ITodoProps) => {
-  const [items, setItems] = useState(itemsList);
-  const [itemsLeft, setItemsLeft] = useState(getItemsLeft(items));
+  // const todoItems: IGetTodoItemsResult = useGetTodoItems(todoService);
+  // const items = todoItems.data;
 
-  // Validate the component's props.
-  if (!props.username) {
-    props.username = "Shifu Meister";
-  }
+  const [items, setItems] = useState<ITodoItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [itemsLeft, setItemsLeft] = useState(0);
+
+  const fetchData = useCallback(async () => {
+    const data = await todoService.getItems();
+    const itemsLeft = getItemsLeft(data);
+
+    setItems(data);
+    setItemsLeft(itemsLeft);
+    setIsLoading(false);
+  }, []);
 
   // function handleChange(key) {
   const handleChange = (key: number) => {
     if (!key) {
       // TODO: Log a meaningful message somewhere...
-      console.log("handleChange: key must be defined!");
+      console.error("handleChange: key must be defined!");
       return;
     }
 
@@ -55,15 +58,38 @@ const Todo = (props: ITodoProps) => {
 
     if (target) {
       target.isDone = !target.isDone;
-      setItems(items);
+      // setItems(items);
       setItemsLeft(getItemsLeft(items));
     } else {
       // TODO: Log a meaningful message somewhere...
-      console.log(
+      console.error(
         `handleChange: item with specified key (${key}) does not exist.`
       );
     }
   };
+
+  const addItem = async () => {
+    // TODO: Better logic to determine the next ID.
+    const nextId = items.length + 1;
+    await todoService.addItem({
+      id: nextId,
+      title: "Hello World!",
+      isDone: false,
+    });
+    await fetchData();
+    // setIsLoading(true);
+  };
+
+  useEffect(() => {
+    if (isLoading) {
+      fetchData();
+    }
+  }, [isLoading, fetchData]);
+
+  // Validate the component's props.
+  if (!props.username) {
+    props.username = "Shifu Meister";
+  }
 
   const itemsComponents = items.map((item) => (
     <ListGroup.Item
@@ -109,7 +135,9 @@ const Todo = (props: ITodoProps) => {
         </Row>
       </Container>
 
-      <Button variant="primary">Go somewhere</Button>
+      <Button variant="primary" onClick={addItem}>
+        Go somewhere
+      </Button>
     </div>
   );
 };

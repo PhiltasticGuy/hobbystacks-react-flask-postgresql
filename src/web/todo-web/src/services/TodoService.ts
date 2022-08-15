@@ -12,14 +12,14 @@ class TodoService implements ITodoService {
 
   public async addItem(item: ITodoItem): Promise<boolean> {
     console.log("TodoService.addItem()");
-    await new Promise((r) => setTimeout(r, 1000));
-    const count = this._itemsList.length;
+    await new Promise((r) => setTimeout(r, 500));
+    const count = this._itemsList.length + 1;
     return this._itemsList.push(item) === count;
   }
 
   public async getItems(): Promise<ITodoItem[]> {
     console.log("TodoService.getItems()");
-    await new Promise((r) => setTimeout(r, 1000));
+    await new Promise((r) => setTimeout(r, 500));
     return this._itemsList;
   }
 }

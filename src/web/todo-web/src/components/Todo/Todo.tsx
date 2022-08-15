@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
-import TodoHeader from "components/TodoHeader/TodoHeader";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import ListGroup from "react-bootstrap/ListGroup";
 import Row from "react-bootstrap/Row";
+
+import TodoHeader from "components/TodoHeader/TodoHeader";
 import ITodoItem from "objects/ITodoItem";
 import TodoService from "services/TodoService";
 // import useGetTodoItems, { IGetTodoItemsResult } from "hooks/useGetTodoItems";
@@ -69,12 +70,15 @@ const Todo = (props: ITodoProps) => {
   const addItem = async () => {
     // TODO: Better logic to determine the next ID.
     const nextId = items.length + 1;
-    await todoService.addItem({
+    const isSuccess = await todoService.addItem({
       id: nextId,
       title: "Hello World!",
       isDone: false,
     });
-    await fetchData();
+
+    if (isSuccess) {
+      await fetchData();
+    }
   };
 
   useEffect(() => {

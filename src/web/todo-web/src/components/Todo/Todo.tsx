@@ -46,7 +46,6 @@ const Todo = (props: ITodoProps) => {
     setIsLoading(false);
   }, []);
 
-  // function handleChange(key) {
   const handleChange = (key: number) => {
     if (!key) {
       // TODO: Log a meaningful message somewhere...
@@ -58,7 +57,6 @@ const Todo = (props: ITodoProps) => {
 
     if (target) {
       target.isDone = !target.isDone;
-      // setItems(items);
       setItemsLeft(getItemsLeft(items));
     } else {
       // TODO: Log a meaningful message somewhere...
@@ -77,7 +75,6 @@ const Todo = (props: ITodoProps) => {
       isDone: false,
     });
     await fetchData();
-    // setIsLoading(true);
   };
 
   useEffect(() => {
@@ -136,7 +133,7 @@ const Todo = (props: ITodoProps) => {
       </Container>
 
       <Button variant="primary" onClick={addItem}>
-        Go somewhere
+        Add Item
       </Button>
     </div>
   );

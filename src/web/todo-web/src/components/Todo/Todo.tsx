@@ -1,5 +1,5 @@
 import { useState } from "react";
-import TodoHeader from "./TodoHeader";
+import TodoHeader from "components/TodoHeader/TodoHeader";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";

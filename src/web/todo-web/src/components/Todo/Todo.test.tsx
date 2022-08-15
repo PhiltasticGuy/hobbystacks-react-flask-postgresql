@@ -1,13 +1,15 @@
 import { render, screen } from "@testing-library/react";
+import TodoService from "services/TodoService";
 import Todo from "./Todo";
 
 test("renders properly", () => {
   // Arrange
+  const todoService = new TodoService();
   const expected = /Welcome to .* TODO list!/i;
   let header = null;
 
   // Act
-  render(<Todo></Todo>);
+  render(<Todo todoService={todoService}></Todo>);
 
   // Assert
   expect(() => {

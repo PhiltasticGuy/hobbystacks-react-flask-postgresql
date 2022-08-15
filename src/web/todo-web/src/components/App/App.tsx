@@ -1,6 +1,10 @@
 import React from "react";
 import "./App.css";
 import Todo from "components/Todo/Todo";
+import TodoService from "services/TodoService";
+
+// TODO: TodoService could be a Singleton.
+const todoService = new TodoService();
 
 const App = () => {
   const user = {
@@ -9,7 +13,7 @@ const App = () => {
 
   return (
     <div className="App">
-      <Todo username={user.name}></Todo>
+      <Todo todoService={todoService} username={user.name}></Todo>
     </div>
   );
 };

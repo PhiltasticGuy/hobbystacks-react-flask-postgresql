@@ -8,11 +8,8 @@ import Row from "react-bootstrap/Row";
 
 import TodoHeader from "components/TodoHeader/TodoHeader";
 import ITodoItem from "objects/ITodoItem";
-import TodoService from "services/TodoService";
+import ITodoService from "services/ITodoService";
 // import useGetTodoItems, { IGetTodoItemsResult } from "hooks/useGetTodoItems";
-
-// TODO: TodoService could be a Singleton.
-const todoService = new TodoService();
 
 const getItemsLeft = (items: ITodoItem[]) => {
   if (!items) {
@@ -27,6 +24,7 @@ const getItemsLeft = (items: ITodoItem[]) => {
 };
 
 interface ITodoProps {
+  todoService: ITodoService;
   username?: string;
 }
 
@@ -39,7 +37,7 @@ const Todo = (props: ITodoProps) => {
   const [itemsLeft, setItemsLeft] = useState(0);
 
   const fetchData = useCallback(async () => {
-    const data = await todoService.getItems();
+    const data = await props.todoService.getItems();
     const itemsLeft = getItemsLeft(data);
 
     setItems(data);
@@ -70,7 +68,7 @@ const Todo = (props: ITodoProps) => {
   const addItem = async () => {
     // TODO: Better logic to determine the next ID.
     const nextId = items.length + 1;
-    const isSuccess = await todoService.addItem({
+    const isSuccess = await props.todoService.addItem({
       id: nextId,
       title: "Hello World!",
       isDone: false,

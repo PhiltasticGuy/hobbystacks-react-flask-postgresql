@@ -16,7 +16,6 @@ const getItemsLeft = (items: ITodoItem[]) => {
   }
 
   const itemsLeft = items.filter((item: ITodoItem) => !item.isDone);
-
   return itemsLeft.length ?? -1;
 };
 
@@ -89,33 +88,24 @@ const Todo = (props: ITodoProps) => {
     username = props.username;
   }
 
-  const itemsComponents = items.map((item) => (
-    <ListGroup.Item
-      action
-      as="li"
-      className="todo-list-item"
-      aria-labelledby={`todo-list-item[${item.id}]`}
-      key={item.id.toString()}
-      onClick={() => handleChange(item.id)}
-    >
-      {/* {" "}
-      <Form.Check
-        type="checkbox"
-        id={item.id.toString()}
-        label={item.title}
-        onChange={() => handleChange(item.id)}
-        checked={item.isDone}
-      /> */}
-      {/* <div>
-        {item.title}
-        {item.isDone ? " - DONE!" : ""}
-      </div> */}
-      <div id={`todo-list-item[${item.id}]`}>
-        {item.title}
-        {item.isDone ? " - DONE!" : ""}
-      </div>
-    </ListGroup.Item>
-  ));
+  const itemsComponents = items.map((item) => {
+    const itemHtmlId = `todo-list-item[${item.id}]`;
+    return (
+      <ListGroup.Item
+        action
+        as="li"
+        className="todo-list-item"
+        aria-labelledby={itemHtmlId}
+        key={item.id.toString()}
+        onClick={() => handleChange(item.id)}
+      >
+        <div id={itemHtmlId}>
+          {item.title}
+          {item.isDone ? " - DONE!" : ""}
+        </div>
+      </ListGroup.Item>
+    );
+  });
 
   return (
     <div id="todo">
@@ -123,13 +113,9 @@ const Todo = (props: ITodoProps) => {
         <Card.Header>
           <TodoHeader username={username}></TodoHeader>
         </Card.Header>
-        {/* <Card.Body> */}
-        {/* <Card.Title>Special title treatment</Card.Title> */}
         <ListGroup as="ul" variant="flush">
           {itemsComponents}
         </ListGroup>
-        {/* <div className="todo-list">{itemsComponents}</div> */}
-        {/* </Card.Body>11 */}
         <Card.Footer>{itemsLeft} items left!</Card.Footer>
       </Card>
 

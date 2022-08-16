@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import ListGroup from "react-bootstrap/ListGroup";
@@ -29,18 +29,7 @@ const Todo = (props: ITodoProps) => {
   // const items = todoItems.data;
 
   const [items, setItems] = useState<ITodoItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [itemsLeft, setItemsLeft] = useState(0);
-
-  const fetchData = useCallback(async () => {
-    const data: ITodoItem[] = await props.todoService.getItems();
-
-    const itemsLeft = getItemsLeft(data);
-
-    setItems(data);
-    setItemsLeft(itemsLeft);
-    setIsLoading(false);
-  }, [props.todoService]);
 
   const handleChange = (key: number) => {
     if (!key) {
@@ -76,11 +65,28 @@ const Todo = (props: ITodoProps) => {
     }
   };
 
-  useEffect(() => {
-    if (isLoading) {
-      fetchData();
+  const isSubscribed = useRef(false);
+
+  const fetchData = useCallback(async () => {
+    const data: ITodoItem[] = await props.todoService.getItems();
+
+    if (isSubscribed.current) {
+      const itemsLeft = getItemsLeft(data);
+
+      setItems(data);
+      setItemsLeft(itemsLeft);
     }
-  }, [isLoading, fetchData]);
+  }, [props.todoService]);
+
+  useEffect(() => {
+    isSubscribed.current = true;
+
+    fetchData().catch(console.error);
+
+    return () => {
+      isSubscribed.current = false;
+    };
+  }, [fetchData]);
 
   // Validate the component's props.
   let username = "Shifu Meister";

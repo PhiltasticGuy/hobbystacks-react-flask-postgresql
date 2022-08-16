@@ -1,10 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
-import Col from "react-bootstrap/Col";
-import Container from "react-bootstrap/Container";
 import ListGroup from "react-bootstrap/ListGroup";
-import Row from "react-bootstrap/Row";
 
 import TodoHeader from "components/TodoHeader/TodoHeader";
 import ITodoItem from "objects/ITodoItem";
@@ -25,7 +22,7 @@ const getItemsLeft = (items: ITodoItem[]) => {
 
 interface ITodoProps {
   todoService: ITodoService;
-  username?: string;
+  username: string | null;
 }
 
 const Todo = (props: ITodoProps) => {
@@ -37,13 +34,14 @@ const Todo = (props: ITodoProps) => {
   const [itemsLeft, setItemsLeft] = useState(0);
 
   const fetchData = useCallback(async () => {
-    const data = await props.todoService.getItems();
+    const data: ITodoItem[] = await props.todoService.getItems();
+
     const itemsLeft = getItemsLeft(data);
 
     setItems(data);
     setItemsLeft(itemsLeft);
     setIsLoading(false);
-  }, []);
+  }, [props.todoService]);
 
   const handleChange = (key: number) => {
     if (!key) {
@@ -86,14 +84,17 @@ const Todo = (props: ITodoProps) => {
   }, [isLoading, fetchData]);
 
   // Validate the component's props.
-  if (!props.username) {
-    props.username = "Shifu Meister";
+  let username = "Shifu Meister";
+  if (props.username) {
+    username = props.username;
   }
 
   const itemsComponents = items.map((item) => (
     <ListGroup.Item
       action
+      as="li"
       className="todo-list-item"
+      aria-labelledby={`todo-list-item[${item.id}]`}
       key={item.id.toString()}
       onClick={() => handleChange(item.id)}
     >
@@ -105,7 +106,11 @@ const Todo = (props: ITodoProps) => {
         onChange={() => handleChange(item.id)}
         checked={item.isDone}
       /> */}
-      <div>
+      {/* <div>
+        {item.title}
+        {item.isDone ? " - DONE!" : ""}
+      </div> */}
+      <div id={`todo-list-item[${item.id}]`}>
         {item.title}
         {item.isDone ? " - DONE!" : ""}
       </div>
@@ -113,26 +118,20 @@ const Todo = (props: ITodoProps) => {
   ));
 
   return (
-    <div className="todo">
-      <Container>
-        <Row>
-          <Col />
-          <Col xs="6">
-            <Card>
-              <Card.Header>
-                <TodoHeader username={props.username}></TodoHeader>
-              </Card.Header>
-              {/* <Card.Body> */}
-              {/* <Card.Title>Special title treatment</Card.Title> */}
-              <ListGroup variant="flush">{itemsComponents}</ListGroup>
-              {/* <div className="todo-list">{itemsComponents}</div> */}
-              {/* </Card.Body>11 */}
-              <Card.Footer>{itemsLeft} items left!</Card.Footer>
-            </Card>
-          </Col>
-          <Col />
-        </Row>
-      </Container>
+    <div id="todo">
+      <Card>
+        <Card.Header>
+          <TodoHeader username={username}></TodoHeader>
+        </Card.Header>
+        {/* <Card.Body> */}
+        {/* <Card.Title>Special title treatment</Card.Title> */}
+        <ListGroup as="ul" variant="flush">
+          {itemsComponents}
+        </ListGroup>
+        {/* <div className="todo-list">{itemsComponents}</div> */}
+        {/* </Card.Body>11 */}
+        <Card.Footer>{itemsLeft} items left!</Card.Footer>
+      </Card>
 
       <Button variant="primary" onClick={addItem}>
         Add Item

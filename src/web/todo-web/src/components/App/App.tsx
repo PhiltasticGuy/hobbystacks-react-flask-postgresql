@@ -1,4 +1,7 @@
 import React from "react";
+import Col from "react-bootstrap/Col";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
 import "./App.css";
 import Todo from "components/Todo/Todo";
 import TodoService from "services/TodoService";
@@ -13,7 +16,15 @@ const App = () => {
 
   return (
     <div className="App">
-      <Todo todoService={todoService} username={user.name}></Todo>
+      <Container>
+        <Row>
+          <Col />
+          <Col xs="6">
+            <Todo todoService={todoService} username={user.name}></Todo>
+          </Col>
+          <Col />
+        </Row>
+      </Container>
     </div>
   );
 };

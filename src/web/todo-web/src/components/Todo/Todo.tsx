@@ -3,7 +3,6 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import ListGroup from "react-bootstrap/ListGroup";
 
-import TodoHeader from "components/TodoHeader/TodoHeader";
 import ITodoItem from "objects/ITodoItem";
 import ITodoService from "services/ITodoService";
 // import useGetTodoItems, { IGetTodoItemsResult } from "hooks/useGetTodoItems";
@@ -21,7 +20,7 @@ const getItemsLeft = (items: ITodoItem[]) => {
 
 interface ITodoProps {
   todoService: ITodoService;
-  username: string | null;
+  username: string;
 }
 
 const Todo = (props: ITodoProps) => {
@@ -56,7 +55,7 @@ const Todo = (props: ITodoProps) => {
     const nextId = items.length + 1;
     const isSuccess = await props.todoService.addItem({
       id: nextId,
-      title: "Hello World!",
+      title: "Hello World",
       isDone: false,
     });
 
@@ -114,11 +113,9 @@ const Todo = (props: ITodoProps) => {
   });
 
   return (
-    <div id="todo">
-      <Card>
-        <Card.Header>
-          <TodoHeader username={username}></TodoHeader>
-        </Card.Header>
+    <>
+      <Card id="todo">
+        <Card.Header as="h2">Welcome to {username}'s TODO list!</Card.Header>
         <ListGroup as="ul" variant="flush">
           {itemsComponents}
         </ListGroup>
@@ -128,7 +125,7 @@ const Todo = (props: ITodoProps) => {
       <Button variant="primary" onClick={addItem}>
         Add Item
       </Button>
-    </div>
+    </>
   );
 };
 

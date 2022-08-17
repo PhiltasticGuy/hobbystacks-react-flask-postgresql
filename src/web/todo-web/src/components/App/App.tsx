@@ -4,10 +4,10 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import "./App.css";
 import Todo from "components/Todo/Todo";
-import TodoService from "services/TodoService";
+import MemoryTodoService from "services/TodoService";
 
 // TODO: TodoService could be a Singleton.
-const todoService = new TodoService();
+const todoService = new MemoryTodoService();
 
 const App = () => {
   const user = {

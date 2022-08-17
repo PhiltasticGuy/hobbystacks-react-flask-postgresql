@@ -1,10 +1,12 @@
 import { render, screen, waitFor, within } from "@testing-library/react";
 import ITodoItem from "objects/ITodoItem";
+import { act } from "react-dom/test-utils";
 import ITodoService from "services/ITodoService";
+import MemoryTodoService from "services/TodoService";
 import Todo from "./Todo";
 
 describe("Todo", () => {
-  it("renders no items initially", async () => {
+  it("renders no items initially (Mocked ITodoService)", async () => {
     // Arrange
     const username = "Shifu Meister";
     const todoService: ITodoService = {
@@ -38,7 +40,7 @@ describe("Todo", () => {
     expect(footer).toBeInTheDocument();
   });
 
-  it("renders single item", async () => {
+  it("renders single item (Mocked ITodoService)", async () => {
     // Arrange
     const username = "Shifu Meister";
     const item = { id: 1, title: "Hello World", isDone: false };
@@ -74,7 +76,7 @@ describe("Todo", () => {
     expect(footer).toBeInTheDocument();
   });
 
-  it("renders newly created item", async () => {
+  it("renders newly created item (Mocked ITodoService)", async () => {
     // Arrange
     const username = "Shifu Meister";
     const item = { id: 1, title: "Hello World", isDone: false };
@@ -118,5 +120,82 @@ describe("Todo", () => {
       name: item.title,
     });
     expect(todoItems).toHaveLength(1);
+  });
+
+  it("renders newly created item (MemoryTodoService)", async () => {
+    // Arrange
+    const username = "Shifu Meister";
+    const item = { id: 1, title: "Hello World", isDone: false };
+    const todoService: ITodoService = new MemoryTodoService();
+    const headerText = /Welcome to .* TODO list!/i;
+    const footerText = /.* items left!/i;
+
+    // Act
+    render(<Todo todoService={todoService} username={username}></Todo>);
+
+    // Assert: Header
+    const header = screen.getByText(headerText);
+    expect(header).not.toBeNull();
+    expect(header).toBeInTheDocument();
+
+    // Assert: Items
+    const todoList = screen.getByRole("list");
+    expect(within(todoList).queryByRole("listitem")).not.toBeInTheDocument();
+
+    // Assert: Footer
+    const footer = screen.getByText(footerText);
+    expect(footer).not.toBeNull();
+    expect(footer).toBeInTheDocument();
+
+    // Act: Add Item
+    const addButton = screen.getByRole("button", { name: "Add Item" });
+    addButton.click();
+
+    // Assert: Item Rendered
+    const todoItems = await waitFor(
+      () => {
+        return within(todoList).findAllByRole("listitem", {
+          name: item.title,
+        });
+      },
+      { timeout: 1000 }
+    );
+    expect(todoItems).toHaveLength(1);
+  });
+
+  it("renders completed item (MemoryTodoService)", async () => {
+    // Arrange
+    const username = "Shifu Meister";
+    const item = { id: 1, title: "Hello World", isDone: false };
+    const items = [item];
+    const todoService: ITodoService = new MemoryTodoService(items);
+    const headerText = /Welcome to .* TODO list!/i;
+    const footerText = /.* items left!/i;
+
+    // Act
+    render(<Todo todoService={todoService} username={username}></Todo>);
+
+    // Assert: Header
+    const header = screen.getByText(headerText);
+    expect(header).not.toBeNull();
+    expect(header).toBeInTheDocument();
+
+    // Assert: Items
+    const todoList = screen.getByRole("list");
+    const todoItem = await within(todoList).findByRole("listitem", {
+      name: item.title,
+    });
+    expect(todoItem).toBeInTheDocument();
+
+    // Assert: Footer
+    const footer = screen.getByText(footerText);
+    expect(footer).not.toBeNull();
+    expect(footer).toBeInTheDocument();
+
+    // Act: Add Item
+    act(() => todoItem.click());
+
+    // Assert: Completed Item Rendered
+    expect(todoItem.textContent).toContain("DONE");
   });
 });

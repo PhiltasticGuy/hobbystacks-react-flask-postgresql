@@ -106,7 +106,7 @@ const Todo = (props: ITodoProps) => {
       >
         <div id={itemHtmlId}>
           {item.title}
-          {item.isDone ? " - DONE!" : ""}
+          {item.isDone ? " - DONE" : ""}
         </div>
       </ListGroup.Item>
     );
